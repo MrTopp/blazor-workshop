@@ -10,6 +10,7 @@
                 </Authorizing>
             </AuthorizeRouteView>
         </Found>
+        @* NotFound visas när ingen sida hittas varken av blazor eller webservern *@
         <NotFound>
             <LayoutView Layout="typeof(MainLayout)">
                 <div class="main">Sorry, there's nothing at this address.</div>
