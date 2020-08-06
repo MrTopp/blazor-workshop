@@ -2,6 +2,9 @@
 
 namespace BlazingPizza
 {
+    /// <summary>
+    /// Statusuppdatering om aktiv order
+    /// </summary>
     public class NotificationSubscription
     {
         public int NotificationSubscriptionId { get; set; }

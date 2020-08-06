@@ -11,6 +11,9 @@ using WebPush;
 
 namespace BlazingPizza.Server
 {
+    /// <summary>
+    /// Serversidans svar på pizza-beställningar
+    /// </summary>
     [Route("orders")]
     [ApiController]
     [Authorize]
@@ -23,6 +26,10 @@ namespace BlazingPizza.Server
             _db = db;
         }
 
+        /// <summary>
+        /// Lista på användarens ordrar
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<List<OrderWithStatus>>> GetOrders()
         {
@@ -37,6 +44,11 @@ namespace BlazingPizza.Server
             return orders.Select(o => OrderWithStatus.FromOrder(o)).ToList();
         }
 
+        /// <summary>
+        /// Hämta upp specifik order för att kunna följa den i nära realtid
+        /// </summary>
+        /// <param name="orderId">Id för önskad order</param>
+        /// <returns>Order med inlagd statusinformation</returns>
         [HttpGet("{orderId}")]
         public async Task<ActionResult<OrderWithStatus>> GetOrderWithStatus(int orderId)
         {
@@ -56,11 +68,16 @@ namespace BlazingPizza.Server
             return OrderWithStatus.FromOrder(order);
         }
 
+        /// <summary>
+        /// Klienten beställer sina pizzor
+        /// </summary>
+        /// <param name="order">Order</param>
+        /// <returns>Id för lagd order</returns>
         [HttpPost]
         public async Task<ActionResult<int>> PlaceOrder(Order order)
         {
             order.CreatedTime = DateTime.Now;
-            order.DeliveryLocation = new LatLong(51.5001, -0.1239);
+            order.DeliveryLocation = new LatLong(51.5001, -0.1239); // Fejk!!!
             order.UserId = GetUserId();
 
             // Enforce existence of Pizza.SpecialId and Topping.ToppingId
@@ -91,11 +108,16 @@ namespace BlazingPizza.Server
             return order.OrderId;
         }
 
+        /// <summary>
+        /// Id för inloggad användare
+        /// </summary>
+        /// <returns></returns>
         private string GetUserId()
         {
             return HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
 
+        
         private static async Task TrackAndSendNotificationsAsync(Order order, NotificationSubscription subscription)
         {
             // In a realistic case, some other backend process would track
@@ -108,6 +130,12 @@ namespace BlazingPizza.Server
             await SendNotificationAsync(order, subscription, "Your order is now delivered. Enjoy!");
         }
 
+        /// <summary>
+        /// Uppdatera klienten vid statusförändring via push
+        /// </summary>
+        /// <param name="order"></param>
+        /// <param name="subscription"></param>
+        /// <param name="message"></param>
         private static async Task SendNotificationAsync(Order order, NotificationSubscription subscription, string message)
         {
             // For a real application, generate your own

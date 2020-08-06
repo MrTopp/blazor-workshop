@@ -1,7 +1,9 @@
 ﻿@inject NavigationManager Navigation
+@* Anropa den här komponenten om användaren inte är inloggad *@
 @code {
     protected override void OnInitialized()
     {
+        // Navigera till login-sidan och skicka med aktuell adress för återhopp
         Navigation.NavigateTo($"authentication/login?returnUrl={Navigation.Uri}");
     }
 }

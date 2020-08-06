@@ -1,9 +1,11 @@
 ﻿<CascadingAuthenticationState>
     <Router AppAssembly="typeof(Program).Assembly" Context="routeData">
         <Found>
+            @* Hantera inloggning, RouteView används för anonym access *@
             <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)">
                 <NotAuthorized>
-                    <RedirectToLogin />
+                    @* Om inte inloggad, kör den här komponenten... *@
+                    <RedirectToLogin/>
                 </NotAuthorized>
                 <Authorizing>
                     <div class="main">Please wait...</div>

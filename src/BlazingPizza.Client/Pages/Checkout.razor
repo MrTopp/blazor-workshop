@@ -1,5 +1,5 @@
 ﻿@page "/checkout"
-@attribute [Authorize]
+@attribute [Authorize]    @* Den här sidan kräver inloggning *@
 @inject OrderState OrderState
 @inject OrdersClient OrdersClient
 @inject NavigationManager NavigationManager
@@ -10,12 +10,12 @@
         <div class="checkout-cols">
             <div class="checkout-order-details">
                 <h4>Review order</h4>
-                <OrderReview Order="OrderState.Order" />
+                <OrderReview Order="OrderState.Order"/>
             </div>
 
             <div class="checkout-delivery-address">
                 <h4>Deliver to...</h4>
-                <AddressEditor Address="OrderState.Order.DeliveryAddress" />
+                <AddressEditor Address="OrderState.Order.DeliveryAddress"/>
             </div>
         </div>
 
@@ -23,16 +23,16 @@
             Place order
         </button>
 
-        <DataAnnotationsValidator />
+        <DataAnnotationsValidator/>
     </EditForm>
 </div>
 
 @code {
-    bool isSubmitting;
+    bool isSubmitting;    // disable submit-button när order läggs
 
     protected override void OnInitialized()
     {
-        // In the background, ask if they want to be notified about order updates
+    // In the background, ask if they want to be notified about order updates
         _ = RequestNotificationSubscriptionAsync();
     }
 
@@ -43,10 +43,12 @@
         {
             try
             {
+                // OrdersClient gör autentiserade anrop till servern
                 await OrdersClient.SubscribeToNotifications(subscription);
             }
             catch (AccessTokenNotAvailableException ex)
             {
+                // Ogiltig autentisering
                 ex.Redirect();
             }
         }
@@ -58,13 +60,16 @@
 
         try
         {
+    // OrdersClient gör autentiserade anrop till servern
             var newOrderId = await OrdersClient.PlaceOrder(OrderState.Order);
             OrderState.ResetOrder();
             NavigationManager.NavigateTo($"myorders/{newOrderId}");
         }
         catch (AccessTokenNotAvailableException ex)
         {
+    // Ogiltig autentisering
             ex.Redirect();
         }
     }
+
 }

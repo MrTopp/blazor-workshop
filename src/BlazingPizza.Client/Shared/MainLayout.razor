@@ -2,24 +2,32 @@
 
 <div class="top-bar">
     <a class="logo" href="">
-        <img src="img/logo.svg" />
+        <img src="img/logo.svg"/>
     </a>
 
     <NavLink href="" class="nav-tab" Match="NavLinkMatch.All">
-        <img src="img/pizza-slice.svg" />
+        <img src="img/pizza-slice.svg"/>
         <div>Get Pizza</div>
     </NavLink>
 
+    @* Den här visas bara om inloggad *@
     <AuthorizeView>
+        @* 
+            NavLink är a-tagg med class "active" om adressen stämmer med
+            aktuell sida 
+        *@
         <NavLink href="myorders" class="nav-tab">
-            <img src="img/bike.svg" />
+            <img src="img/bike.svg" alt="My Orders"/>
             <div>My Orders</div>
         </NavLink>
     </AuthorizeView>
 
-    <LoginDisplay />
+    @* Status för inloggningen *@
+    <LoginDisplay/>
+    
 </div>
 
 <div class="content">
+    @* Plats för content *@
     @Body
 </div>
